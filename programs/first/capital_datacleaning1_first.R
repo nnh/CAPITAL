@@ -175,16 +175,6 @@ names(B_C10)[2:8] <- c("B_C10_Nab.Paclitaxel投与量","10Nab.Paclitaxel投与�
 
 
 
-#以下のプログラムで動くように修正する
-for (i in 1:10) {
-  eval(
-    parse(
-      text=paste0("names(A_C",i,")[2] <- c(A_C",i,"_Docetaxel投与量)")
-    )
-  )
-}
-
-
 # merge A course
 D1 <- merge(A_C1,A_C2,by="症例登録番号",all=T)
 D2 <- merge(D1,A_C3,by="症例登録番号",all=T)
