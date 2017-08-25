@@ -1,4 +1,8 @@
-setwd("//Rinken-sv2/プロトコール別/CAPITAL/定期モニタリングレポート/第3回 (201601201～20170531)/R")
+
+#2016/8/25 
+#ando
+
+
 setwd("./programs")
 setwd("../rowdata")
 
