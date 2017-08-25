@@ -4,7 +4,7 @@
 
 
 setwd("./programs")
-setwd("../rowdata")
+setwd("../rawdata")
 
 #ファイルの読み込み
 list <- list.files()
