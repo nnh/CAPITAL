@@ -1,156 +1,111 @@
-
-#2016/8/25 
-#ando
-
+# TODO:andoPGM名追加
+# 2016/8/25 
+# ando
+# 関数の設定
+# A courseで必要な変数名を抽出する関数
+CapiCourseA <- function(a){
+  a[,c("症例登録番号","Docetaxel投与量","末梢性感覚ニューロパチー","好中球数減少","血小板減少","発熱性好中球減少")]
+}
+# B courseで必要な変数名を抽出する関数
+CapiCourseB <- function(b){
+  b[,c("症例登録番号","Carboplatin.投与量","Nab.Paclitaxel投与量","Nab.Paclitaxel投与量.1","Nab.Paclitaxel投与量.2","末梢性感覚ニューロパチー","好中球数減少","血小板減少","発熱性好中球減少")]
+}
+# B courseで必要な変数名を抽出する関数（7 course以降の抽出変数名が変更となっているため別記載）
+CapiCourseB_after7 <- function(c){
+  c[,c("症例登録番号","Nab.Paclitaxel投与量","Nab.Paclitaxel投与量.1","Nab.Paclitaxel投与量.2","末梢性感覚ニューロパチー","好中球減少","血小板減少","発熱性好中球減少")]
+}
 
 setwd("./programs")
 setwd("../rawdata")
 
 #ファイルの読み込み
 list <- list.files()
-
 file.name <- sub("_170620_1258.*", "", list)  # downloaded date
-
 df.name <- sub("^.*.AL_", "", file.name)
 
-
-
 for (i in 1:length(list)) {
-  
   assign(df.name[i], read.csv(list[i], as.is=T, na.strings = c("")))
-  
-  
-}
+  }
 
 
 
-# A courseで必要な変数名を抽出。1～10courseまで行う
-CapiCourseA <- function(a){
-  a[,c("症例登録番号","Docetaxel投与量","末梢性感覚ニューロパチー","好中球数減少","血小板減少","発熱性好中球減少")]
-}
+# A courseで必要な変数名を抽出する作業を1～10courseまで行う
+# CapiCourseA <- function(a){
+#   a[,c("症例登録番号","Docetaxel投与量","末梢性感覚ニューロパチー","好中球数減少","血小板減少","発熱性好中球減少")]
+# }
 
 for (i in 1:10) {
-  eval(
-    parse(
-      text=paste0("A_C",i,"<- CapiCourseA(C",i,"_a)")
-    )
-  )
+  eval(parse(text=paste0("A_C",i,"<- CapiCourseA(C",i,"_a)")))
 }
 
-
-# B courseで必要な変数名を抽出。1～6courseまで行う
-CapiCourseB <- function(b){
-  b[,c("症例登録番号","Carboplatin.投与量","Nab.Paclitaxel投与量","Nab.Paclitaxel投与量.1","Nab.Paclitaxel投与量.2","末梢性感覚ニューロパチー","好中球数減少","血小板減少","発熱性好中球減少")]
-}
-
+# # B courseで必要な変数名を抽出。1～6courseまで行う
+# CapiCourseB <- function(b){
+#   b[,c("症例登録番号","Carboplatin.投与量","Nab.Paclitaxel投与量","Nab.Paclitaxel投与量.1","Nab.Paclitaxel投与量.2","末梢性感覚ニューロパチー","好中球数減少","血小板減少","発熱性好中球減少")]
+# }
 
 for (i in 1:6) {
-  eval(
-    parse(
-      text=paste0("B_C",i,"<- CapiCourseB(C",i,"_b)")
-    )
-  )
+  eval(parse(text=paste0("B_C",i,"<- CapiCourseB(C",i,"_b)")))
 }
 
 
-# B courseで必要な変数名を抽出。7～10courseまで行う（7 course以降の抽出変数名が変更となっているため別記載）
-CapiCourseB_after7 <- function(c){
-  c[,c("症例登録番号","Nab.Paclitaxel投与量","Nab.Paclitaxel投与量.1","Nab.Paclitaxel投与量.2","末梢性感覚ニューロパチー","好中球減少","血小板減少","発熱性好中球減少")]
-}
+# # B courseで必要な変数名を抽出。7～10courseまで行う（7 course以降の抽出変数名が変更となっているため別記載）
+# CapiCourseB_after7 <- function(c){
+#   c[,c("症例登録番号","Nab.Paclitaxel投与量","Nab.Paclitaxel投与量.1","Nab.Paclitaxel投与量.2","末梢性感覚ニューロパチー","好中球減少","血小板減少","発熱性好中球減少")]
+# }
 
 for (i in 7:10) {
-  eval(
-    parse(
-      text=paste0("B_C",i,"<- CapiCourseB_after7(C",i,"_b)")
-    )
-  )
+  eval(parse(text=paste0("B_C",i,"<- CapiCourseB_after7(C",i,"_b)")))
 }
 
 
 # 有害事象のグレードだけ抽出（Aコース）
 for (i in 1:10) {
-  eval(
-    parse(
-      text=paste0("A_C",i,"$末梢性感覚ニューロパチー <- substr(A_C",i,"$末梢性感覚ニューロパチー,10,10)")
-    )
-  )
+  eval(parse(text=paste0("A_C",i,"$末梢性感覚ニューロパチー <- substr(A_C",i,"$末梢性感覚ニューロパチー,10,10)")))
 }
 
 for (i in 1:10) {
-  eval(
-    parse(
-      text=paste0("A_C",i,"$好中球数減少 <- substr(A_C",i,"$好中球数減少,10,10)")
-    )
-  )
+  eval(parse(text=paste0("A_C",i,"$好中球数減少 <- substr(A_C",i,"$好中球数減少,10,10)")))
 }
 
 for (i in 1:10) {
-  eval(
-    parse(
-      text=paste0("A_C",i,"$血小板減少 <- substr(A_C",i,"$血小板減少,10,10)")
-    )
-  )
+  eval(parse(text=paste0("A_C",i,"$血小板減少 <- substr(A_C",i,"$血小板減少,10,10)")))
 }
 
 for (i in 1:10) {
-  eval(
-    parse(
-      text=paste0("A_C",i,"$発熱性好中球減少 <- substr(A_C",i,"$発熱性好中球減少,10,10)")
-    )
-  )
+  eval(parse(text=paste0("A_C",i,"$発熱性好中球減少 <- substr(A_C",i,"$発熱性好中球減少,10,10)")))
 }
 
 # 有害事象のグレードだけ抽出（Bコース）
 for (i in 1:10) {
-  eval(
-    parse(
-      text=paste0("B_C",i,"$末梢性感覚ニューロパチー <- substr(B_C",i,"$末梢性感覚ニューロパチー,10,10)")
-    )
-  )
+  eval(parse(text=paste0("B_C",i,"$末梢性感覚ニューロパチー <- substr(B_C",i,"$末梢性感覚ニューロパチー,10,10)")))
 }
 
 
 
 for (i in 1:10) {
-  eval(
-    parse(
-      text=paste0("B_C",i,"$血小板減少 <- substr(B_C",i,"$血小板減少,10,10)")
-    )
-  )
+  eval(parse(text=paste0("B_C",i,"$血小板減少 <- substr(B_C",i,"$血小板減少,10,10)")))
 }
 
 
 for (i in 1:10) {
-  eval(
-    parse(
-      text=paste0("B_C",i,"$発熱性好中球減少 <- substr(B_C",i,"$発熱性好中球減少,10,10)")
-    )
-  )
+  eval(parse(text=paste0("B_C",i,"$発熱性好中球減少 <- substr(B_C",i,"$発熱性好中球減少,10,10)")))
 }
 
 # 1-6course,7-10courseで変数名が違うため、別記載する
 for (i in 1:6) {
-  eval(
-    parse(
-      text=paste0("B_C",i,"$好中球数減少 <- substr(B_C",i,"$好中球数減少,10,10)") 
-    )
-  )
+  eval(parse(text=paste0("B_C",i,"$好中球数減少 <- substr(B_C",i,"$好中球数減少,10,10)")))
 }
 
 
 for (i in 7:10) {
-  eval(
-    parse(
-      text=paste0("B_C",i,"$好中球減少 <- substr(B_C",i,"$好中球減少,10,10)") 
-    )
-  )
+  eval(parse(text=paste0("B_C",i,"$好中球減少 <- substr(B_C",i,"$好中球減少,10,10)")))
 }
 
 
 
 
 # 変数名の変更 A course
-names(A_C1)[2:6] <- c("A_C1_Docetaxel投与量","1末梢性感覚ニューロパチー","1好中球数減少","1血小板減少","1発熱性好中球減少")
+names(A_C1)[2:6] <- paste0("A_C1_", names(A_C1)[2:6]) ##TODO ando　以下こんな感じでいかが？
 names(A_C2)[2:6] <- c("A_C2_Docetaxel投与量","2末梢性感覚ニューロパチー","2好中球数減少","2血小板減少","2発熱性好中球減少")
 names(A_C3)[2:6] <- c("A_C3_Docetaxel投与量","3末梢性感覚ニューロパチー","3好中球数減少","3血小板減少","3発熱性好中球減少")
 names(A_C4)[2:6] <- c("A_C4_Docetaxel投与量","4末梢性感覚ニューロパチー","4好中球数減少","4血小板減少","4発熱性好中球減少")
@@ -201,5 +156,5 @@ D9[is.na(D9)] <- ""
 D16[is.na(D16)] <- ""
 setwd("../output")
 
-write.csv(D9,"A_course20170816.csv",row.names=F)
+write.csv(D9,"A_course20170816.csv",row.names=F)　　# TOSO:ando日付の部分、上の方に定義をまとめられるといいですが。
 write.csv(D16,"B_course20170816.csv",row.names=F)
