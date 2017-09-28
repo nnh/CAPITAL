@@ -4,17 +4,17 @@
 # 関数の変更
 
 
-setwd("./programs")
-setwd("../rawdata")
+setwd(".///////programs")
+# setwd("../rawdata")
 
 #outputの日付設定
-outputfail <- "20170904"
+outputfile <- "20170904"
 
 #ファイルの読み込み
-list <- list.files()
+list <- list.files("./rawdata")
 file.name <- sub("_170620_1258.*", "", list)  # downloaded date
 df.name <- sub("^.*.AL_", "", file.name)
-
+setwd("./rawdata")  #TODO
 for (i in 1:length(list)) {
   assign(df.name[i], read.csv(list[i], as.is=T, na.strings = c("")))
   }
@@ -145,7 +145,7 @@ D109 <- merge(D108,B_C10,by="症例登録番号",all=T)
 
 D9[is.na(D9)] <- ""
 D106[is.na(D106)] <- ""      #7courseまでのmergeのため、以後シート提出時あれば要修正
-setwd("../output")
+# setwd("../output")
 
-write.csv(D9,paste0("A_course",outputfail,".csv"),row.names=F)　　
-write.csv(D106,paste0("B_course",outputfail,".csv"),row.names=F)
+write.csv(D9,paste0("A_course",outputfile,".csv"),row.names=F)　　
+write.csv(D106,paste0("B_course",outputfile,".csv"),row.names=F)
