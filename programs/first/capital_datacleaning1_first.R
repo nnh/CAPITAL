@@ -1,18 +1,17 @@
 # TODO:andoPGM名追加
-# 2016/9/20 
+# 2016/9/28
 # ando
-# 関数の変更
+# output,names(Bcourse)の修正
 
-
-setwd("./programs")
-setwd("../rawdata")
+#setwd("../rawdata")
+setwd("C:/Users/SahokoAndo/Documents/GitHub/CAPITAL/rawdata")
 
 #outputの日付設定
-outputfail <- "20170904"
+outputfail <- "20170928"  #today
 
 #ファイルの読み込み
 list <- list.files()
-file.name <- sub("_170620_1258.*", "", list)  # downloaded date
+file.name <- sub("_170808_1417.*", "", list)  # downloaded date
 df.name <- sub("^.*.AL_", "", file.name)
 
 for (i in 1:length(list)) {
@@ -109,16 +108,16 @@ names(A_C10)[2:6] <- paste0("A_C10_", names(A_C10)[2:6])
 
 
 # 変数名の変更 B course
-names(B_C1)[2:6] <- paste0("B_C1_", names(B_C1)[2:6])
-names(B_C2)[2:6] <- paste0("B_C2_", names(B_C2)[2:6])
-names(B_C3)[2:6] <- paste0("B_C3_", names(B_C3)[2:6])
-names(B_C4)[2:6] <- paste0("B_C4_", names(B_C4)[2:6])
-names(B_C5)[2:6] <- paste0("B_C5_", names(B_C5)[2:6])
-names(B_C6)[2:6] <- paste0("B_C6_", names(B_C6)[2:6])
-names(B_C7)[2:6] <- paste0("B_C7_", names(B_C7)[2:6])
-names(B_C8)[2:6] <- paste0("B_C8_", names(B_C8)[2:6])
-names(B_C9)[2:6] <- paste0("B_C9_", names(B_C9)[2:6])
-names(B_C10)[2:6] <- paste0("B_C10_", names(B_C10)[2:6])
+names(B_C1)[2:9] <- paste0("B_C1_", names(B_C1)[2:9])
+names(B_C2)[2:9] <- paste0("B_C2_", names(B_C2)[2:9])
+names(B_C3)[2:9] <- paste0("B_C3_", names(B_C3)[2:9])
+names(B_C4)[2:9] <- paste0("B_C4_", names(B_C4)[2:9])
+names(B_C5)[2:9] <- paste0("B_C5_", names(B_C5)[2:9])
+names(B_C6)[2:9] <- paste0("B_C6_", names(B_C6)[2:9])
+names(B_C7)[2:8] <- paste0("B_C7_", names(B_C7)[2:8])
+names(B_C8)[2:8] <- paste0("B_C8_", names(B_C8)[2:8])
+names(B_C9)[2:8] <- paste0("B_C9_", names(B_C9)[2:8])
+names(B_C10)[2:8] <- paste0("B_C10_", names(B_C10)[2:8])
 
 
 # merge A course
@@ -144,8 +143,8 @@ D108 <- merge(D107,B_C9,by="症例登録番号",all=T)
 D109 <- merge(D108,B_C10,by="症例登録番号",all=T)
 
 D9[is.na(D9)] <- ""
-D106[is.na(D106)] <- ""      #7courseまでのmergeのため、以後シート提出時あれば要修正
+D109[is.na(D109)] <- ""     
 setwd("../output")
 
 write.csv(D9,paste0("A_course",outputfail,".csv"),row.names=F)　　
-write.csv(D106,paste0("B_course",outputfail,".csv"),row.names=F)
+write.csv(D109,paste0("B_course",outputfail,".csv"),row.names=F)
