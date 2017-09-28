@@ -6,15 +6,23 @@
 setwd("//ARONAS/Datacenter/Trials/NMC/CAPITAL/定期モニタリングレポート/第3回 (201601201～20170531)/R")
 #setwd("../rawdata")
 
+<<<<<<< HEAD
 
 #outputの日付設定
 outputfile <- "20170928"  #today
+=======
+setwd(".///////programs")
+# setwd("../rawdata")
+
+#outputの日付設定
+outputfile <- "20170904"
+>>>>>>> bec1e4d49f8928f889aa5aae43cfc0b9d61ca689
 
 #ファイルの読み込み
 list <- list.files("./rawdata")
 file.name <- sub("_170620_1258.*", "", list)  # downloaded date
 df.name <- sub("^.*.AL_", "", file.name)
-
+setwd("./rawdata")  #TODO
 for (i in 1:length(list)) {
   assign(df.name[i], read.csv(list[i], as.is=T, na.strings = c("")))
   }
@@ -144,8 +152,15 @@ D108 <- merge(D107,B_C9,by="症例登録番号",all=T)
 D109 <- merge(D108,B_C10,by="症例登録番号",all=T)
 
 D9[is.na(D9)] <- ""
+<<<<<<< HEAD
 D106[is.na(D106)] <- ""     
 #setwd("../output")
 
 write.csv(D9,paste0("A_course",outputfile,".csv"),row.names=F)　　#todo
+=======
+D106[is.na(D106)] <- ""      #7courseまでのmergeのため、以後シート提出時あれば要修正
+# setwd("../output")
+
+write.csv(D9,paste0("A_course",outputfile,".csv"),row.names=F)　　
+>>>>>>> bec1e4d49f8928f889aa5aae43cfc0b9d61ca689
 write.csv(D106,paste0("B_course",outputfile,".csv"),row.names=F)
