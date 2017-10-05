@@ -1,23 +1,20 @@
 # TODO:andoPGM名追加
-# 2016/9/28
+# 2016/10/3
 # ando
-# output,names(Bcourse)の修正
+# 10courseまでのdataで集計。setwdの設定
 
-setwd("//ARONAS/Datacenter/Trials/NMC/CAPITAL/定期モニタリングレポート/第3回 (201601201～20170531)/R")
+setwd("//ARONAS/Datacenter/Trials/NMC/CAPITAL/定期モニタリングレポート/第4回 (20170601～20171130)/R")
 #setwd("../rawdata")
 
 
 #outputの日付設定
-outputfile <- "20170928"  #today
+outputfile <- "20171003"  #today
 
-
-#outputの日付設定
-outputfile <- "20170928"
 
 
 #ファイルの読み込み
 list <- list.files("./rawdata")
-file.name <- sub("_170620_1258.*", "", list)  # downloaded date
+file.name <- sub("_170808_1417.*", "", list)  # downloaded date
 df.name <- sub("^.*.AL_", "", file.name)
 setwd("./rawdata")  #TODO
 for (i in 1:length(list)) {
@@ -149,8 +146,8 @@ D108 <- merge(D107,B_C9,by="症例登録番号",all=T)
 D109 <- merge(D108,B_C10,by="症例登録番号",all=T)
 
 D9[is.na(D9)] <- ""
-D106[is.na(D106)] <- ""  
+D109[is.na(D109)] <- ""  
 
-#setwd("../output")
+setwd("../output")
 write.csv(D9,paste0("A_course",outputfile,".csv"),row.names=F)　　
-write.csv(D106,paste0("B_course",outputfile,".csv"),row.names=F)
+write.csv(D109,paste0("B_course",outputfile,".csv"),row.names=F)
