@@ -11,8 +11,15 @@ kAllocation_colname <- "group"
 kTarget2_colnames <- c("末梢性感覚ニューロパチー", "白血球減少", "好中球数減少", "貧血", "血小板減少",
                        "発熱性好中球減少", "疲労", "筋肉痛", "関節痛", "四肢浮腫")
 kTarget1_colnames <- c("シート名英数字別名", "作成日", "登録コード", kSubjid_colname, kTarget2_colnames)
-kOutputList <- c("worst_gradeoutput_2_a", "worst_gradeoutput_2_b",
-                 "worst_gradeoutput_result_a", "worst_gradeoutput_result_b")
+kOutputList <- c("Worst_Gradeoutput_2a", "Worst_Gradeoutput_2b",
+                 "Worst_Gradeoutput_result_a", "Worst_Gradeoutput_result_b",
+                 "Worst_Gradeoutput_1a", "Worst_Gradeoutput_1b")
+k1a <- as.numeric(which(kOutputList == "Worst_Gradeoutput_1a"))
+k1b <- as.numeric(which(kOutputList == "Worst_Gradeoutput_1b"))
+k2a <- as.numeric(which(kOutputList == "Worst_Gradeoutput_2a"))
+k2b <- as.numeric(which(kOutputList == "Worst_Gradeoutput_2b"))
+kResult_a <- as.numeric(which(kOutputList == "Worst_Gradeoutput_result_a"))
+kResult_b <- as.numeric(which(kOutputList == "Worst_Gradeoutput_result_b"))
 # ------ functions ------
 #' @title ReturnGradeMaximumValue
 #' @description Get the worst grade(exclude grade5) ae for each registration id and save it in a data frame
@@ -28,20 +35,20 @@ ReturnGradeMaximumValue <- function(df, target_colname){
                           as.numeric(temp_term_grade[ , 2]),
                           NA)  # grade 5 -> NA
   # Get the maximum Grade value for each case number
-  temp_max <- tapply(temp_df$grade, temp_df$症例登録番号, max)
+  temp_max <- tapply(temp_df$grade, temp_df[ , kSubjid_colname], max)
   res_df <- data.frame(as.numeric(names(temp_max)), temp_max, stringsAsFactors=F)
   colnames(res_df) <- c(kSubjid_colname, target_colname)
   return(res_df)
 }
 #' @title CreateIdDataFrame
-#' @description Create and return a data frame for the column with only the registration id
+#' @description Create and return a data frame for the column with only the SUBJID
 #' @param df : Input data frame
-#' @return a data frame for the column with only the registration id
+#' @return a data frame for the column with only the SUBJID
 CreateIdDataFrame <- function(df){
   return(unique(df[ , kSubjid_colname, drop=F]))
 }
 #' @title MergeAll
-#' @description Merge multiple data frames by case registration id and group
+#' @description Merge multiple data frames by SUBJID
 #' @param df_list : List the target data frames.
 #' @return a data frame
 MergeAll <- function(df_list){
@@ -56,15 +63,20 @@ MergeAll <- function(df_list){
   }
   return(res_df)
 }
-#' @title OutputWorstGrade_2
-#' @description Create an object to output "Worst_Gradeoutput_2 [a / b] .csv"
+#' @title SetAllocation
+#' @description Set the Japanese label for the group
 #' @param input_df : A data frame
-#' @param str_allocation : allocation label
+#' @param group : "a" or "b"
 #' @return A data frame
-OutputWorstGrade_2 <- function(input_df, str_allocation){
+SetAllocation <- function(input_df, group){
+  if (group == "a"){
+    str_allocation = "A群"
+  } else {
+    str_allocation = "B群"
+  }
   output_df <- data.frame(rep(str_allocation, nrow(input_df)))
   colnames(output_df) <- "群"
-  output_df <- cbind(output_df, input_df[, colnames(input_df) != kAllocation_colname])
+  output_df <- cbind(output_df, input_df)
   return(output_df)
 }
 #' @title OutputWorstGradeResult
@@ -74,7 +86,7 @@ OutputWorstGrade_2 <- function(input_df, str_allocation){
 OutputWorstGradeResult <- function(input_df){
   kGrade3Col <- 5
   kGrade4Col <- 6
-  kColnames <- c("", "grade0", "grade1", "grade2", "grade3", "grade４", "grade3-4(%)", "grade4(%)", "合計")
+  kColnames <- c("", "grade0", "grade1", "grade2", "grade3", "grade4", "grade3-4(%)", "grade4(%)", "合計")
   output_df <- data.frame(kTarget2_colnames, stringsAsFactors=F)
   output_df <- cbind(output_df, data.frame(matrix(rep(0), ncol=length(kColnames) - 1, nrow=nrow(output_df)),
                                            stringsAsFactors=F))
@@ -106,59 +118,54 @@ file_list <- list.files(rawdata_path)
 target_idx <- grep("^CAPITAL_C[1-9][0-9]*_[a|b]", file_list)
 target_file_list <- file_list[target_idx]
 # Combine cycle sheets
-df_all_rbind <- lapply(target_file_list,
-               function(x){
-                 temp_df <- read.csv(paste0(rawdata_path, "/", x), fileEncoding="cp932", stringsAsFactors=F)
-                 # If the column name is "好中球減少", change it to "好中球数減少".
-                 colnames(temp_df) <- gsub("^好中球減少$", "好中球数減少", colnames(temp_df))
-                 # If the creation date is outside the target period, delete the record
-                 if (!is.na(kTarget_date_start)){
-                   temp_df <- subset(temp_df, 作成日 >= kTarget_date_start)
-                 }
-                 if (!is.na(kTarget_date_end)){
-                   temp_df <- subset(temp_df, 作成日 <= kTarget_date_end)
-                 }
-                 # Remove unnecessary columns
-                 temp_df <- temp_df[ , c(kTarget1_colnames)]
-                 return(temp_df)
-               })
+df_all_rbind <- lapply(target_file_list, function(x){
+  temp_df <- read.csv(paste0(rawdata_path, "/", x), fileEncoding="cp932", stringsAsFactors=F)
+  # If the column name is "好中球減少", change it to "好中球数減少".
+  colnames(temp_df) <- gsub("^好中球減少$", "好中球数減少", colnames(temp_df))
+  # If the creation date is outside the target period, delete the record
+  if (!is.na(kTarget_date_start)){
+    temp_df <- subset(temp_df, 作成日 >= kTarget_date_start)
+  }
+  if (!is.na(kTarget_date_end)){
+    temp_df <- subset(temp_df, 作成日 <= kTarget_date_end)
+  }
+  # Remove unnecessary columns
+  temp_df <- temp_df[ , c(kTarget1_colnames)]
+  # Sort by SUBJID
+  sortlist <- order(as.numeric(temp_df[ ,kSubjid_colname]))
+  temp_df <- temp_df[sortlist, ]
+  return(temp_df)
+})
 # Convert from list to data frame
 df_all_rbind <- do.call(rbind, df_all_rbind)
 # Set the allocation, "a" or "b"
-df_all_rbind$group <- substr(df_all_rbind$シート名英数字別名,
-                             nchar(df_all_rbind[ ,"シート名英数字別名"]), nchar(df_all_rbind[ ,"シート名英数字別名"]))
-# Create a list of allocation and registration id
-df_group <- unique(df_all_rbind[ ,c(kSubjid_colname, kAllocation_colname)])
-sortlist <- order(as.numeric(df_group[ ,kSubjid_colname]))
-df_group <- df_group[sortlist, ]
-# Get the worst grade for each SUBJID (Excluding Grade 5)
-list_worst_gradeoutput_2 <- lapply(kTarget2_colnames, function(x){
-  temp_df <- ReturnGradeMaximumValue(df_all_rbind, x)
-})
-# Merge all data frame
-worst_gradeoutput_2 <- MergeAll(list_worst_gradeoutput_2)
-# Sort by SUBJID
-sortlist <- order(as.numeric(worst_gradeoutput_2[ ,kSubjid_colname]))
-worst_gradeoutput_2 <- worst_gradeoutput_2[sortlist, ]
-# Merge allocation
-worst_gradeoutput_2 <- merge(worst_gradeoutput_2, df_group, by=kSubjid_colname)
-# Output for each allocation
-assign(kOutputList[1], OutputWorstGrade_2(subset(worst_gradeoutput_2, group == "a"), "A群"))
-assign(kOutputList[2], OutputWorstGrade_2(subset(worst_gradeoutput_2, group == "b"), "B群"))
-assign(kOutputList[3], OutputWorstGradeResult(get(kOutputList[1])[ , -c(1, 2)]))
-assign(kOutputList[4], OutputWorstGradeResult(get(kOutputList[2])[ , -c(1, 2)]))
-# write csv
+df_all_rbind[ , kAllocation_colname] <- substr(df_all_rbind$シート名英数字別名,
+                                               nchar(df_all_rbind[ ,"シート名英数字別名"]),
+                                               nchar(df_all_rbind[ ,"シート名英数字別名"]))
+# Split dataset into groups
 temp_list <- by(df_all_rbind, df_all_rbind$group, data.frame)
 tmp <- lapply(temp_list, function(x){
+  # "a" or "b"
   temp_group <- x[1, kAllocation_colname]
+  # Delete column "group"
   df <- x[ , colnames(x) != kAllocation_colname]
+  # Get the worst grade for each SUBJID (Excluding Grade 5)
+  list_worst_gradeoutput_2 <- lapply(kTarget2_colnames, function(x){ return(ReturnGradeMaximumValue(df, x)) })
+  # Merge all data frame by SUBJID
+  temp_worst_gradeoutput_2 <- MergeAll(list_worst_gradeoutput_2)
+  # Set allocation label
+  worst_gradeoutput_2 <- SetAllocation(temp_worst_gradeoutput_2, temp_group)
   if (temp_group == "a"){
-    csv_name <- "Worst_Gradeoutput_1a.csv"
+    output_object_list <- kOutputList[c(k1a, k2a, kResult_a)]
   } else {
-    csv_name <- "Worst_Gradeoutput_1b.csv"
+    output_object_list <- kOutputList[c(k1b, k2b, kResult_b)]
   }
-  write.csv(df, file=paste0(output_path, "/", csv_name), row.names=F, na="", fileEncoding="cp932")
+  # Set output object
+  assign(output_object_list[1], df, envir=.GlobalEnv)
+  assign(output_object_list[2], worst_gradeoutput_2, envir=.GlobalEnv)
+  assign(output_object_list[3], OutputWorstGradeResult(get(output_object_list[2])[ , -c(1, 2)]), envir=.GlobalEnv)
 })
+# write csv
 tmp <- lapply(kOutputList, function(x){
   write.csv(get(x), file=paste0(output_path, "/", x, ".csv"), row.names=F, na="", fileEncoding="cp932")
-  })
+})
