@@ -1,9 +1,9 @@
 **************************************************************************
-Program Name : CAPITAL_WorstGrade.sas
-Study Name : NMC-CAPITAL
+Program : CAPITAL_WorstGrade.sas
+Study : NMC-CAPITAL
+Published : 2019-11-22
 Author : Kato Kiroku
-Date : 2019-11-20
-SAS version : 9.4
+Version : 20.02.07.003
 **************************************************************************;
 
 libname libmacro "C:\Users\KirokuKato\Documents\SAS\mymacros";
@@ -15,7 +15,7 @@ options mstored sasmstore=libmacro;
                                                                           - %length(%scan(&curdir, -3, '\'))
                                                                           - 3);
 %put &pardir;
-%let raw=&pardir.\tools\document\input;
+%let raw=&pardir.\tools\input\rawdata;
 %let out=&pardir.\tools\output\SAS;
 
 %READ_CSV(&raw);
@@ -26,10 +26,10 @@ options mstored sasmstore=libmacro;
     %global list_a;
     %let list_a=;
     %do i=1 %to 20;
-        %let ds=Capital_c&i._a_190801_1248;
+        %let ds=Capital_c&i._a_200203_1143;
         %if %sysfunc(exist(work.&ds)) %then %do;
-            data Capital_c&i._a_190801_1248;
-                set Capital_c&i._a_190801_1248;
+            data Capital_c&i._a_200203_1143;
+                set Capital_c&i._a_200203_1143;
                 label VAR1='シート名英数字別名'
                         VAR2='作成日'
                         VAR8='登録コード'
@@ -46,8 +46,8 @@ options mstored sasmstore=libmacro;
                         VAR35='四肢浮腫';
                 keep VAR1 VAR2 VAR8 VAR9 VAR17 VAR19 VAR21 VAR23 VAR25 VAR27 VAR29 VAR31 VAR33 VAR35;
             run;
-            proc sort data=Capital_c&i._a_190801_1248 sortseq=linguistic(Numeric_Collation=ON);
-                by VAR9;
+            proc sort data=Capital_c&i._a_200203_1143 sortseq=linguistic(Numeric_Collation=ON);
+                by VAR1 VAR9;
             run;
             %if &list_a= %then %let list_a=&ds;
             %else %let list_a=%sysfunc(catx(%quote( ), &list_a, &ds));
@@ -60,6 +60,12 @@ options mstored sasmstore=libmacro;
 %ARRANGE_DS_a;
 data Worst_Gradeoutput_1a;
     set &list_a;
+    date=input(VAR2, yymmdd10.);
+run;
+data Worst_Gradeoutput_1a;
+    set Worst_Gradeoutput_1a;
+    where date <= '30NOV2019'd;
+    drop date;
 run;
 %ds2csv(data=Worst_Gradeoutput_1a, runmode=b, csvfile=&out.\Worst_Gradeoutput_1a.csv);
 
@@ -68,10 +74,10 @@ run;
     %global list_b;
     %let list_b=;
     %do i=1 %to 6;
-        %let ds=Capital_c&i._b_190801_1248;
+        %let ds=Capital_c&i._b_200203_1143;
         %if %sysfunc(exist(work.&ds)) %then %do;
-            data Capital_c&i._b_190801_1248;
-                set Capital_c&i._b_190801_1248;
+            data Capital_c&i._b_200203_1143;
+                set Capital_c&i._b_200203_1143;
                 label VAR1='シート名英数字別名'
                         VAR2='作成日'
                         VAR8='登録コード'
@@ -88,22 +94,23 @@ run;
                         VAR45='四肢浮腫';
                 keep VAR1 VAR2 VAR8 VAR9 VAR27 VAR29 VAR31 VAR33 VAR35 VAR37 VAR39 VAR41 VAR43 VAR45;
             run;
-            proc sort data=Capital_c&i._b_190801_1248 sortseq=linguistic(Numeric_Collation=ON);
-                by VAR9;
+            proc sort data=Capital_c&i._b_200203_1143 sortseq=linguistic(Numeric_Collation=ON);
+                by VAR1 VAR9;
             run;
             %if &list_b= %then %let list_b=&ds;
             %else %let list_b=%sysfunc(catx(%quote( ), &list_b, &ds));
         %end;
     %end;
     %do i=7 %to 20;
-        %let ds=Capital_c&i._b_190801_1248;
+        %let ds=Capital_c&i._b_200203_1143;
         %if %sysfunc(exist(work.&ds)) %then %do;
-            data Capital_c&i._b_190801_1248;
-                set Capital_c&i._b_190801_1248;
+            data Capital_c&i._b_200203_1143;
+                set Capital_c&i._b_200203_1143;
                 label VAR1='シート名英数字別名'
                         VAR2='作成日'
                         VAR8='登録コード'
                         VAR9='症例登録番号'
+                        VAR25='末梢性感覚ニューロパチー'
                         VAR27='白血球減少'
                         VAR29='好中球数減少'
                         VAR31='貧血'
@@ -113,7 +120,7 @@ run;
                         VAR39='筋肉痛'
                         VAR41='関節痛'
                         VAR43='四肢浮腫';
-                keep VAR1 VAR2 VAR8 VAR9 VAR27 VAR29 VAR31 VAR33 VAR35 VAR37 VAR39 VAR41 VAR43;
+                keep VAR1 VAR2 VAR8 VAR9 VAR25 VAR27 VAR29 VAR31 VAR33 VAR35 VAR37 VAR39 VAR41 VAR43;
                 rename VAR43=VAR45
                             VAR41=VAR43
                             VAR39=VAR41
@@ -122,10 +129,11 @@ run;
                             VAR33=VAR35
                             VAR31=VAR33
                             VAR29=VAR31
-                            VAR27=VAR29;
+                            VAR27=VAR29
+                            VAR25=VAR27;
             run;
-            proc sort data=Capital_c&i._b_190801_1248 sortseq=linguistic(Numeric_Collation=ON);
-                by VAR9;
+            proc sort data=Capital_c&i._b_200203_1143 sortseq=linguistic(Numeric_Collation=ON);
+                by VAR1 VAR9;
             run;
             %let list_b=%sysfunc(catx(%quote( ), &list_b, &ds));
         %end;
@@ -137,6 +145,12 @@ run;
 %ARRANGE_DS_b;
 data Worst_Gradeoutput_1b;
     set &list_b;
+    date=input(VAR2, yymmdd10.);
+run;
+data Worst_Gradeoutput_1b;
+    set Worst_Gradeoutput_1b;
+    where date <= '30NOV2019'd;
+    drop date;
 run;
 %ds2csv(data=Worst_Gradeoutput_1b, runmode=b, csvfile=&out.\Worst_Gradeoutput_1b.csv);
 
@@ -167,14 +181,18 @@ run;
             retain &c._max;
             if first.VAR9 then &c._max=&c;
             &c=&c._max;
+        run;
+        data Worst_gradeoutput_2&ds._add;
+            set Worst_gradeoutput_2&ds;
+            by VAR9;
             if first.VAR9;
             keep VAR1 VAR9 &loop;
         run;
-        proc sort data=Worst_gradeoutput_2&ds sortseq=linguistic(Numeric_Collation=ON);
+        proc sort data=Worst_gradeoutput_2&ds._add sortseq=linguistic(Numeric_Collation=ON);
             by VAR9;
         run;
     %end;
-    %ds2csv(data=Worst_gradeoutput_2&ds, runmode=b, csvfile=&out.\Worst_gradeoutput_2&ds..csv);
+    %ds2csv(data=Worst_gradeoutput_2&ds._add, runmode=b, csvfile=&out.\Worst_gradeoutput_2&ds..csv);
 
 %mend ARRANGE_DS_2;
 
@@ -189,7 +207,7 @@ run;
     %else %let loop=VAR27 VAR29 VAR31 VAR33 VAR35 VAR37 VAR39 VAR41 VAR43 VAR45;
     %do i=1 %to %sysfunc(countw(&loop));
         %let c=%scan(&loop, &i);
-        proc freq data=Worst_gradeoutput_2&ds noprint;
+        proc freq data=Worst_gradeoutput_2&ds._add noprint;
             table &c / out=temp;
         run;
         data temp;

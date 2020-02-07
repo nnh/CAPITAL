@@ -2,10 +2,10 @@
 # Mariko Ohtsuka
 # 2019/11/15 created
 # ------ Constants ------
-rawdata_path <- "/Volumes/Stat/Trials/NMC/CAPITAL/tools/document/input"
-output_path <- "/Users/admin/Documents/GitHub/CAPITAL/output"
-kTarget_date_start <- as.Date("2000/1/1")
-kTarget_date_end <- as.Date("2020/12/31")
+rawdata_path <- "/Volumes/Stat/Trials/NMC/CAPITAL/tools/input/rawdata"
+output_path <- "/Volumes/Stat/Trials/NMC/CAPITAL/tools/output/R/s"
+kTarget_date_start <- as.Date("1900/1/1")
+kTarget_date_end <- as.Date("2019/11/30")
 kSubjid_colname <- "症例登録番号"
 kAllocation_colname <- "group"
 kTarget2_colnames <- c("末梢性感覚ニューロパチー", "白血球減少", "好中球数減少", "貧血", "血小板減少",

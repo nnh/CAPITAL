@@ -1,21 +1,67 @@
 library(dplyr)
 library(stringr)
 library(openxlsx)
-rawdata_path <- "/Volumes/Stat/Trials/NMC/CAPITAL/tools/document/input"
-input_csv <- c("CAPITAL_C10_a_190801_1248.csv", "CAPITAL_C10_b_190801_1248.csv", "CAPITAL_C11_a_190801_1248.csv",
-               "CAPITAL_C11_b_190801_1248.csv", "CAPITAL_C12_a_190801_1248.csv", "CAPITAL_C12_b_190801_1248.csv",
-               "CAPITAL_C13_a_190801_1248.csv", "CAPITAL_C13_b_190801_1248.csv", "CAPITAL_C14_a_190801_1248.csv",
-               "CAPITAL_C14_b_190801_1248.csv", "CAPITAL_C15_a_190801_1248.csv", "CAPITAL_C15_b_190801_1248.csv",
-               "CAPITAL_C16_a_190801_1248.csv", "CAPITAL_C16_b_190801_1248.csv", "CAPITAL_C17_a_190801_1248.csv",
-               "CAPITAL_C17_b_190801_1248.csv", "CAPITAL_C18_a_190801_1248.csv", "CAPITAL_C18_b_190801_1248.csv",
-               "CAPITAL_C19_a_190801_1248.csv", "CAPITAL_C19_b_190801_1248.csv", "CAPITAL_C1_a_190801_1248.csv",
-               "CAPITAL_C1_b_190801_1248.csv", "CAPITAL_C20_a_190801_1248.csv", "CAPITAL_C20_b_190801_1248.csv",
-               "CAPITAL_C2_a_190801_1248.csv", "CAPITAL_C2_b_190801_1248.csv", "CAPITAL_C3_a_190801_1248.csv",
-               "CAPITAL_C3_b_190801_1248.csv", "CAPITAL_C4_a_190801_1248.csv", "CAPITAL_C4_b_190801_1248.csv",
-               "CAPITAL_C5_a_190801_1248.csv", "CAPITAL_C5_b_190801_1248.csv", "CAPITAL_C6_a_190801_1248.csv",
-               "CAPITAL_C6_b_190801_1248.csv", "CAPITAL_C7_a_190801_1248.csv", "CAPITAL_C7_b_190801_1248.csv",
-               "CAPITAL_C8_a_190801_1248.csv", "CAPITAL_C8_b_190801_1248.csv", "CAPITAL_C9_a_190801_1248.csv",
-               "CAPITAL_C9_b_190801_1248.csv")
+rawdata_path <- "/Volumes/Stat/Trials/NMC/CAPITAL/tools/input/rawdata"
+input_csv <- c("CAPITAL_C1_a_200203_1143.csv",
+               "CAPITAL_C1_b_200203_1143.csv",
+               "CAPITAL_C10_a_200203_1143.csv",
+               "CAPITAL_C10_b_200203_1143.csv",
+               "CAPITAL_C11_a_200203_1143.csv",
+               "CAPITAL_C11_b_200203_1143.csv",
+               "CAPITAL_C12_a_200203_1143.csv",
+               "CAPITAL_C12_b_200203_1143.csv",
+               "CAPITAL_C13_a_200203_1143.csv",
+               "CAPITAL_C13_b_200203_1143.csv",
+               "CAPITAL_C14_a_200203_1143.csv",
+               "CAPITAL_C14_b_200203_1143.csv",
+               "CAPITAL_C15_a_200203_1143.csv",
+               "CAPITAL_C15_b_200203_1143.csv",
+               "CAPITAL_C16_a_200203_1143.csv",
+               "CAPITAL_C16_b_200203_1143.csv",
+               "CAPITAL_C17_a_200203_1143.csv",
+               "CAPITAL_C17_b_200203_1143.csv",
+               "CAPITAL_C18_a_200203_1143.csv",
+               "CAPITAL_C18_b_200203_1143.csv",
+               "CAPITAL_C19_a_200203_1143.csv",
+               "CAPITAL_C19_b_200203_1143.csv",
+               "CAPITAL_C2_a_200203_1143.csv",
+               "CAPITAL_C2_b_200203_1143.csv",
+               "CAPITAL_C20_a_200203_1143.csv",
+               "CAPITAL_C20_b_200203_1143.csv",
+               "CAPITAL_C21_a_200203_1143.csv",
+               "CAPITAL_C21_b_200203_1143.csv",
+               "CAPITAL_C22_a_200203_1143.csv",
+               "CAPITAL_C22_b_200203_1143.csv",
+               "CAPITAL_C23_a_200203_1143.csv",
+               "CAPITAL_C23_b_200203_1143.csv",
+               "CAPITAL_C24_a_200203_1143.csv",
+               "CAPITAL_C24_b_200203_1143.csv",
+               "CAPITAL_C25_a_200203_1143.csv",
+               "CAPITAL_C25_b_200203_1143.csv",
+               "CAPITAL_C26_a_200203_1143.csv",
+               "CAPITAL_C26_b_200203_1143.csv",
+               "CAPITAL_C27_a_200203_1143.csv",
+               "CAPITAL_C27_b_200203_1143.csv",
+               "CAPITAL_C28_a_200203_1143.csv",
+               "CAPITAL_C28_b_200203_1143.csv",
+               "CAPITAL_C29_a_200203_1143.csv",
+               "CAPITAL_C29_b_200203_1143.csv",
+               "CAPITAL_C3_a_200203_1143.csv",
+               "CAPITAL_C3_b_200203_1143.csv",
+               "CAPITAL_C30_a_200203_1143.csv",
+               "CAPITAL_C30_b_200203_1143.csv",
+               "CAPITAL_C4_a_200203_1143.csv",
+               "CAPITAL_C4_b_200203_1143.csv",
+               "CAPITAL_C5_a_200203_1143.csv",
+               "CAPITAL_C5_b_200203_1143.csv",
+               "CAPITAL_C6_a_200203_1143.csv",
+               "CAPITAL_C6_b_200203_1143.csv",
+               "CAPITAL_C7_a_200203_1143.csv",
+               "CAPITAL_C7_b_200203_1143.csv",
+               "CAPITAL_C8_a_200203_1143.csv",
+               "CAPITAL_C8_b_200203_1143.csv",
+               "CAPITAL_C9_a_200203_1143.csv",
+               "CAPITAL_C9_b_200203_1143.csv")
 df_csv <- NULL
 for (i in 1:length(input_csv)){
   temp_df <- read.csv(paste0(rawdata_path, "/", input_csv[i]), fileEncoding="cp932", stringsAsFactors=F)
@@ -25,6 +71,10 @@ for (i in 1:length(input_csv)){
                                     "血小板減少","発熱性好中球減少","疲労","筋肉痛","関節痛","四肢浮腫"))
   df_csv <- rbind(df_csv, temp_2_df)  # 　②読み込んだデータを１つのデータフレームへまとめる。
 }
+# 期限
+df_csv$date <- as.Date(df_csv$作成日)
+df_csv <- df_csv %>% filter(date >= as.Date("2019-06-01")) %>% filter(date <= as.Date("2019-11-30"))
+df_csv <- df_csv[, colnames(df_csv) != "date"]
 df_csv <- df_csv %>% arrange(シート名英数字別名, 症例登録番号)
 df_all_a <- df_csv %>% filter(str_sub(df_csv$シート名英数字別名, start=-1,end=-1) == "a")
 df_all_b <- df_csv %>% filter(str_sub(df_csv$シート名英数字別名, start=-1,end=-1) == "b")
